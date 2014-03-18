@@ -1,0 +1,85 @@
+﻿@using System.Globalization
+@using KudesniK.EntityFramework.OrderPageExtensions
+@using KudesniK.EntityFramework.OrderPageExtensions.Core.Types
+@using KudesniK.EntityFramework.OrderPageExtensions.DataTypes;
+@using KudesniK.EntityFramework.OrderPageExtensions.Demo.Models;
+@model PagedData<OrderedData<Country[],CountryOrder>>
+
+@helper HeaderWithOrder(string title, CountryOrder order, OrderDirection startDirection)
+{
+    var direction = Model.Data.Order == order ? Model.Data.Direction.Reverse() : startDirection;
+    @Html.ActionLink(title, "Countries", new { order = order, direction = direction, page = Model.Page });
+}
+
+@helper Pager()
+{
+    for (var i = 1; i <= Model.PagesCount; i++)
+    {
+        if (Model.Page == i) { <span class="page-index">@i</span> }
+        else { <span class="page-index">@Html.ActionLink(i.ToString(), "Countries", new { order = Model.Data.Order, direction = Model.Data.Direction, page = i })</span> }
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>KudesniK.EF.OPE demo</title>
+        <style type="text/css">
+            
+            #countries-container { width:100%;}
+
+            #countries-container .country-record > .rank { width:50px;}
+            #countries-container .country-record > .name { width:250px;}
+            #countries-container .country-record > .population { width:100px;}
+            #countries-container .country-record > .year { width:50px;}
+            #countries-container .country-record > .percent { width:100px;}
+            #countries-container .country-record > .date { width:100px;}
+            #countries-container .country-record > .source { }
+
+            .text-right { text-align: right;}
+            .text-center { text-align: center;}
+            .space-top { margin-top: 20px;}
+
+            .pager > .page-index {
+                padding: 5px 15px;
+                border: dotted 1px silver;
+                margin: 0px 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>List of countries by population</h1>
+        <div>
+            <table id="countries-container">
+                <tr>
+                    <th>@HeaderWithOrder("Rank", CountryOrder.Rank, OrderDirection.Asc)</th>
+                    <th>@HeaderWithOrder("Name", CountryOrder.Name, OrderDirection.Asc)</th>
+                    <th>@HeaderWithOrder("Population", CountryOrder.Population, OrderDirection.Desc)</th>
+                    <th>@HeaderWithOrder("% of world population", CountryOrder.Percent, OrderDirection.Desc)</th>
+                    <th>@HeaderWithOrder("Relevance", CountryOrder.RelevanceTop, OrderDirection.Asc)</th>
+                    <th>@HeaderWithOrder("Date", CountryOrder.Date, OrderDirection.Desc)</th>
+                    <th>@HeaderWithOrder("Source", CountryOrder.Source, OrderDirection.Desc)</th>
+                </tr>
+                @foreach (var item in Model.Data.Data)
+                {
+                    <tr class="country-record">
+                        <td class="rank text-center">@item.Rank</td>
+                        <td class="name">@item.Name</td>
+                        <td class="population text-right">@item.Population.ToString("n0", CultureInfo.InvariantCulture)</td>
+                        <td class="percent text-right">@Math.Round(item.Percent, 4) %</td>
+                        <td class="year text-center">@item.Date.Year</td>
+                        <td class="date text-center">@item.Date.ToShortDateString()</td>
+                        <td class="source">@item.Source</td>
+                    </tr>
+                }
+            </table>
+            
+            <div class="pager space-top">
+                Total items: @Model.ItemsCount
+                @Pager()
+            </div>
+        </div>
+        <h6>Data are taken from <a href="http://en.wikipedia.org/wiki/List_of_countries_by_population">wikipedia</a>.</h6>
+    </body>
+</html>
