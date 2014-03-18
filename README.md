@@ -153,3 +153,8 @@ public ActionResult Countries(CountryOrder order = CountryOrder.Name, OrderDirec
     }
 }
 ```
+
+
+### How to play
+
+Download the repository, open solution, run the 'KudesniK.EntityFramework.OrderPageExtensions.Demo' web-application.
