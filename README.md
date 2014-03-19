@@ -1,6 +1,9 @@
 ### Example of using ordering in EntityFramework and ASP.NET MVC with enums
-
 ===
+
+## The problem
+---
+
 
 Classic activity with EF is paging and ordering, by the issue is that using the swith is extra dirty:
 ```
@@ -158,3 +161,14 @@ public ActionResult Countries(CountryOrder order = CountryOrder.Name, OrderDirec
 ### How to play
 
 Download the repository, open solution, run the 'KudesniK.EntityFramework.OrderPageExtensions.Demo' web-application.
+
+### Nuget
+
+Now the library is available on nuget:
+```
+Install-Package KudesniK.EntityFramework.OrderPageExtensions
+```
+And with examples and small setup:
+```
+Install-Package KudesniK.EntityFramework.OrderPageExtensions.AspNet.Mvc
+```
